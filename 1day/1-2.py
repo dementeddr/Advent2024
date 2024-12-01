@@ -2,6 +2,7 @@
 
 import sys
 import re
+from collections import defaultdict
 from time import perf_counter_ns
 
 _day = 1 #Advent of Code day
@@ -10,22 +11,20 @@ _day = 1 #Advent of Code day
 
 def main(data):
 
-    list1 = []
-    list2 = []
-    
+    left_list = []
+    right_reps = defaultdict(int)
+
     for line in data:
         nums = line.split("  ")
-        list1.append(int(nums[0]))
-        list2.append(int(nums[1]))
+        left_list.append(int(nums[0]))
+        right_reps[int(nums[1])] += 1
 
-    sort1 = sorted(list1)
-    sort2 = sorted(list2)
-    total_err = 0
+    similarity = 0
 
-    for i in range(len(sort1)):
-        total_err += abs(sort1[i] - sort2[i])
+    for lefty in left_list:
+        similarity += lefty * right_reps[lefty]
 
-    print(total_err)
+    print(similarity)
 
     
 ## END SOLUTION
