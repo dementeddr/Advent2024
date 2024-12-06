@@ -30,17 +30,10 @@ def main(data):
                     
     print(count)
 
+
 def search_dir(grid, coord, direct, string):
 
     if grid[coord[1]][coord[0]] != string[0]:
-        return False
-    if direct[1] < 0 and coord[1] < len(string) - 1: #up
-        return False
-    if direct[1] > 0 and coord[1] > len(grid) - len(string): #down
-        return False
-    if direct[0] < 0 and coord[0] < len(string) - 1: #left
-        return False
-    if direct[0] > 0 and coord[0] > len(grid[coord[1]]) - len(string): #right
         return False
 
     for i in range(1, len(string)):
