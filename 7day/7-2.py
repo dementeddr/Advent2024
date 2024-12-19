@@ -33,6 +33,9 @@ def assemble_ops(result, vals):
         if len(inums) == 0:
             return total == result
 
+        if total > result:
+            return False
+
         i = len(vals) - len(inums) - 1
             
         for op in range(3):
@@ -57,6 +60,7 @@ def assemble_ops(result, vals):
         return False
 
     #return inner_ops(vals[0], vals[1:])
+
     if inner_ops(vals[0], vals[1:]):
         print("Success:", end='')
         print_eq(result, vals, ops)
