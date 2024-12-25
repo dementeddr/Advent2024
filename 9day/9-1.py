@@ -18,71 +18,71 @@ def main(data):
     end_id = max_id
     end_pos = len(line) - 1
     cur_pos = 0
+    end_block = int(line[-1])
     checksum = 0
-    block_queue = deque()
     space_queue = deque()
 
-    #end = {}
+    output = {}
 
     print(f"{len(line)} -> {end_id}")
-
-    for _ in range(int(line[-1])):
-        #print(f"enqueue: end block {max_id}")
-        block_queue.append(max_id)
-
-    #print()
+    print()
 
     for i in range(0, len(line)-1, 2):
+
+        if i >= end_pos:
+            break
 
         s_file = int(line[i])
         s_space = int(line[i+1])
 
-        #print(f"[{i} -> {start_id}]: {s_file} {s_space} | {cur_pos} {checksum}")
+        print(f"[{i} -> {start_id}]: {s_file} {s_space} | {cur_pos} {checksum}")
 
-        if i < end_pos:
-            for _ in range(s_file):
-                checksum += cur_pos * start_id
-                #end[cur_pos] = hex(start_id)[-1]
-                #print(f"  s_file: {cur_pos} * {start_id} = {checksum}")
-                cur_pos += 1
+        for _ in range(s_file):
+            checksum += cur_pos * start_id
+            output[cur_pos] = hex(start_id)[-1]
+            print(f"  s_file: {cur_pos} * {start_id} = {checksum}")
+            cur_pos += 1
 
         for _ in range(s_space):
-            #print(f"  s_spac: space in {cur_pos}")
+            print(f"  s_spac: space at {cur_pos}")
             space_queue.append(cur_pos)
             cur_pos += 1
 
-        while len(space_queue) > len(block_queue) and i < end_pos:
-            end_pos -= 2
-            end_id -= 1
-            e_file = int(line[end_pos])
-            #print(f"  e_file: [{end_pos} -> {end_id}]")
+        while len(space_queue) > 0 and i < end_pos:
+            if end_block == 0:
+                end_pos -= 2
+                end_id -= 1
+                if i>= end_pos:
+                    break
+                e_file = int(line[end_pos])
+                end_block = e_file
+                print(f"  e_file: moved to file {end_id} of length {e_file}")
 
-            for _ in range(e_file):
-                #print(f"    enqueue: block in {end_id}")
-                block_queue.append(end_id)
-        
-        for _ in range(min(len(block_queue), len(space_queue))):
-            block = block_queue.popleft()
             space = space_queue.popleft()
-            checksum += block * space
-            #end[space] = hex(block)[-1]
-            #print(f"  queues: {block} * {space} = {checksum}")
+            checksum += end_id * space
+            end_block -= 1
+            output[space] = hex(end_id)[-1]
+            print(f"  filled: [{end_block}] -> {space} * {end_id} = {checksum}")
         
-
         start_id += 1
-        #print()
+        print()
 
-        if i >= end_pos and len(block_queue) == 0:
-            break
+    while end_block > 0:
+        checksum += end_id * cur_pos
+        print(f"finish end file: {end_id} * {cur_pos} = {checksum}")
+        output[cur_pos] = hex(end_id)[-1]
+        cur_pos += 1
+        end_block -= 1
 
-    #keys = sorted(end)
+    #print()
+    #keys = sorted(output)
     #out = ''
 
-    #for i in range(keys[-1]):
-    #    out += end[i] if i in keys else '.'
+    #for i in range(keys[-1]+1):
+    #    out += output[i] if i in keys else '.'
 
     #print(out)
-    print()
+    #print()
     print(f"Checksum = {checksum}")
 
     
